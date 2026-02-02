@@ -1,0 +1,8 @@
+---
+- name: Test AAP connectivity
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Ping test
+      ansible.builtin.ping:
