@@ -1,9 +1,25 @@
-- name: Find package managers and key tools
-  shell: ls /usr/bin/ /usr/local/bin/ /bin/ /sbin/ /usr/sbin/ 2>/dev/null | grep -E "^(pip|dnf|yum|apt|microdnf|docker|git|apk)"
-  register: tools
-  changed_when: false
-  failed_when: false
+- name: Install docker using microdnf
+  command: microdnf install -y docker
 
-- name: Show relevant tools
-  debug:
-    msg: "{{ tools.stdout_lines }}"
+- name: Start Docker daemon in background
+  shell: dockerd > /tmp/dockerd.log 2>&1 &
+  async: 0
+  poll: 0
+
+- name: Wait for Docker socket to be ready
+  wait_for:
+    path: /var/run/docker.sock
+    timeout: 30
+
+- name: Add current user to docker group
+  command: usermod -aG docker root
+
+- name: Clone application repository
+  git:
+    repo: "{{ app_repo }}"
+    dest: "/tmp/cnf_app"
+    version: "{{ app_branch }}"
+    force: yes
+
+- name: Build Docker image
+  command: docker build -t "{{ image_name }}:{{ image_tag }}" /tmp/cnf_app
