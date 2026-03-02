@@ -31,12 +31,9 @@
     force: yes
 
 - name: Build Docker image
-  community.docker.docker_image:
-    name: "{{ image_name }}"
-    tag: "{{ image_tag }}"
-    source: build
-    build:
-      path: /tmp/cnf_app
+  command: docker build -t "{{ image_name }}:{{ image_tag }}" /tmp/cnf_app
+  args:
+    chdir: /tmp/cnf_app
 
 - name: Show image built
   debug:
