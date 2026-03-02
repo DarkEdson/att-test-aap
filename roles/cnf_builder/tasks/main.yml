@@ -1,10 +1,9 @@
 ---
 - name: Install required packages
-  package:
-    name:
-      - git
-      - docker
-    state: present
+  shell: |
+    dnf install -y git docker || yum install -y git docker
+  args:
+    executable: /bin/bash
 
 - name: Enable and start Docker
   service:
