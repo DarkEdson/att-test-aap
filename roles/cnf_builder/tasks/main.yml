@@ -1,0 +1,43 @@
+---
+- name: Install required packages
+  package:
+    name:
+      - git
+      - docker
+    state: present
+
+- name: Enable and start Docker
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add current user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+    
+- name: Ensure git is installed
+  package:
+    name: git
+    state: present
+
+- name: Clone application repository
+  git:
+    repo: "{{ app_repo }}"
+    dest: "/tmp/cnf_app"
+    version: "{{ app_branch }}"
+    force: yes
+
+- name: Build Docker image
+  community.docker.docker_image:
+    name: "{{ image_name }}"
+    tag: "{{ image_tag }}"
+    source: build
+    build:
+      path: /tmp/cnf_app
+
+- name: Show image built
+  debug:
+    msg: "Image {{ image_name }}:{{ image_tag }} built successfully"

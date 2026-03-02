@@ -1,0 +1,6 @@
+---
+app_repo: "https://github.com/docker/getting-started-app.git"
+app_branch: "main"
+
+image_name: "cnf-demo-app"
+image_tag: "v1"
