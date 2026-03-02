@@ -1,9 +1,9 @@
-- name: Check available package manager
-  shell: ls /usr/bin/apt-get /usr/bin/dnf /usr/bin/yum /usr/bin/apk /sbin/apk 2>/dev/null | head -1
-  register: pkg_manager
+- name: List all binaries
+  shell: ls /usr/bin/ /usr/local/bin/ /bin/ /sbin/ /usr/sbin/ 2>/dev/null
+  register: bins
   changed_when: false
   failed_when: false
 
-- name: Show package manager
+- name: Show binaries
   debug:
-    msg: "{{ pkg_manager.stdout }}"
+    msg: "{{ bins.stdout_lines }}"
