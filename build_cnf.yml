@@ -1,6 +1,6 @@
 ---
 - name: Build CNF Image
   hosts: all
-  become: true
+  become: false
   roles:
     - cnf_builder
