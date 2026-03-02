@@ -1,37 +1,8 @@
----
-- name: Install required packages
-  shell: |
-    dnf install -y git docker || yum install -y git docker
-  args:
-    executable: /bin/bash
+- name: Check available package manager
+  command: which apt-get || which dnf || which yum || which apk
+  register: pkg_manager
+  changed_when: false
 
-- name: Enable and start Docker
-  service:
-    name: docker
-    state: started
-    enabled: true
-
-- name: Add current user to docker group
-  user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: yes
-    
-- name: Ensure git is installed
-  command: dnf install -y git
-
-- name: Clone application repository
-  git:
-    repo: "{{ app_repo }}"
-    dest: "/tmp/cnf_app"
-    version: "{{ app_branch }}"
-    force: yes
-
-- name: Build Docker image
-  command: docker build -t "{{ image_name }}:{{ image_tag }}" /tmp/cnf_app
-  args:
-    chdir: /tmp/cnf_app
-
-- name: Show image built
+- name: Show package manager
   debug:
-    msg: "Image {{ image_name }}:{{ image_tag }} built successfully"
+    msg: "{{ pkg_manager.stdout }}"
