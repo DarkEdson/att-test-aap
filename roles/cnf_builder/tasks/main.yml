@@ -1,9 +1,9 @@
-- name: List all binaries
-  shell: ls /usr/bin/ /usr/local/bin/ /bin/ /sbin/ /usr/sbin/ 2>/dev/null
-  register: bins
+- name: Find package managers and key tools
+  shell: ls /usr/bin/ /usr/local/bin/ /bin/ /sbin/ /usr/sbin/ 2>/dev/null | grep -E "^(pip|dnf|yum|apt|microdnf|docker|git|apk)"
+  register: tools
   changed_when: false
   failed_when: false
 
-- name: Show binaries
+- name: Show relevant tools
   debug:
-    msg: "{{ bins.stdout_lines }}"
+    msg: "{{ tools.stdout_lines }}"
