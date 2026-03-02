@@ -1,7 +1,8 @@
 - name: Check available package manager
-  command: which apt-get || which dnf || which yum || which apk
+  shell: ls /usr/bin/apt-get /usr/bin/dnf /usr/bin/yum /usr/bin/apk /sbin/apk 2>/dev/null | head -1
   register: pkg_manager
   changed_when: false
+  failed_when: false
 
 - name: Show package manager
   debug:
