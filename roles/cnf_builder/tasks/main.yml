@@ -18,9 +18,7 @@
     append: yes
     
 - name: Ensure git is installed
-  package:
-    name: git
-    state: present
+  command: dnf install -y git
 
 - name: Clone application repository
   git:
